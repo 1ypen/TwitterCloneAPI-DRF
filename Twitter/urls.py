@@ -1,3 +1,4 @@
+from django.conf.urls import url
 from django.contrib import admin
 from django.urls import path, include
 from django.conf.urls.static import static
@@ -9,6 +10,8 @@ from Twitter import settings
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/tweets/', include('tweets.urls')),
+    url(r'^auth/', include('djoser.urls')),
+    url(r'^auth/', include('djoser.urls.authtoken')),
     path('__debug__/', include(debug_toolbar.urls)),
 ]
 
