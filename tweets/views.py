@@ -22,11 +22,7 @@ class TweetsListApiView(ListAPIView):
                 user_name=F('user__name'),
                 user_login=F('user__login'),
                 user_avatar=F('user__avatar')
-        )
+            )
         return queryset
 
     serializer_class = TweetsListSerializer
-
-# class TweetsListApiView(ListAPIView):
-#     queryset = Tweets.objects.all()
-#     serializer_class = TweetsListSerializer
