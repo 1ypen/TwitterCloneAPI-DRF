@@ -6,10 +6,10 @@ from .models import Tweets
 
 
 class TweetsListSerializer(serializers.ModelSerializer):
-    user_name = serializers.CharField()
-    user_avatar = serializers.URLField()
-    is_liked = serializers.BooleanField()
-    like_count = serializers.IntegerField()
+    user_name = serializers.CharField(read_only=True)
+    user_avatar = serializers.URLField(read_only=True)
+    is_liked = serializers.BooleanField(read_only=True)
+    like_count = serializers.IntegerField(read_only=True)
     created_date = serializers.SerializerMethodField(method_name='get_formatted_creation_date')
 
     class Meta:
