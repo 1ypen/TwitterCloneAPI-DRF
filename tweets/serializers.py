@@ -14,3 +14,8 @@ class TweetsListSerializer(serializers.ModelSerializer):
     class Meta:
         model = Tweets
         fields = ['id', 'user_name', 'user_avatar', 'created_date', 'text', 'is_liked', 'like_count']
+
+    def create(self, validated_data):
+        user = self.context['request'].user
+        tweets = Tweets.objects.create(user=user, **validated_data)
+        return tweets

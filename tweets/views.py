@@ -1,11 +1,11 @@
 from django.db.models import Count, F, Case, When
-from rest_framework.generics import ListAPIView
+from rest_framework.generics import ListCreateAPIView
 
 from .models import Tweets
 from .serializers import TweetsListSerializer
 
 
-class TweetsListApiView(ListAPIView):
+class TweetsListApiView(ListCreateAPIView):
 
     def get_queryset(self):
         user_likes_id = []
