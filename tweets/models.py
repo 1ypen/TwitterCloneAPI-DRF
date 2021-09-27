@@ -23,3 +23,8 @@ class Tweets(models.Model):
 
     def __str__(self):
         return self.text[:50]
+
+
+class TweetImage(models.Model):
+    tweet = models.ForeignKey(Tweets, on_delete=models.CASCADE, related_name='images')
+    img = models.ImageField(upload_to='images/tweets')
