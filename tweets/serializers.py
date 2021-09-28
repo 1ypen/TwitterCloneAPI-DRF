@@ -1,6 +1,13 @@
 from rest_framework import serializers
 
-from .models import Tweets
+from .models import Tweets, TweetImage
+
+
+class CustomListImageSerializer(serializers.ListField):
+    def to_representation(self, data):
+        if type(data) == str:
+            return [data]
+        return [self.child.to_representation(item) if item is not None else None for item in data]
 
 
 class TweetsListSerializer(serializers.ModelSerializer):
@@ -8,10 +15,11 @@ class TweetsListSerializer(serializers.ModelSerializer):
     user_avatar = serializers.URLField(read_only=True)
     is_liked = serializers.BooleanField(read_only=True)
     like_count = serializers.IntegerField(read_only=True)
+    img = CustomListImageSerializer()
 
     class Meta:
         model = Tweets
-        fields = ['id', 'user_name', 'user_avatar', 'created_date', 'text', 'is_liked', 'like_count']
+        fields = ['id', 'user_name', 'user_avatar', 'created_date', 'text', 'img', 'is_liked', 'like_count']
 
     def create(self, validated_data):
         user = self.context['request'].user
