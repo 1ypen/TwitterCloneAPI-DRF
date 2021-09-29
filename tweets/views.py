@@ -1,7 +1,9 @@
 from django.db.models import Count, F, Case, When
 from rest_framework.generics import ListCreateAPIView
+from rest_framework.views import APIView
+from rest_framework.views import Response
 
-from .models import Tweets, TweetImage
+from .models import Tweets
 from .serializers import TweetsListSerializer
 from .utils import merge_values
 
@@ -30,3 +32,19 @@ class TweetsListApiView(ListCreateAPIView):
         return merge_values(queryset)
 
     serializer_class = TweetsListSerializer
+
+
+class TweetLikeApiView(APIView):
+
+    def post(self, request):
+        tweet_id = request.data.get('id')
+        action = request.data.get('action')
+
+        tweet = Tweets.objects.get(id=tweet_id)
+
+        if action == 'like':
+            tweet.users_like.add(request.user.id)
+        elif action == 'dislike':
+            tweet.users_like.remove(request.user.id)
+
+        return Response()
