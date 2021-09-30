@@ -16,16 +16,35 @@ class TweetsListSerializer(serializers.ModelSerializer):
     user_avatar = serializers.URLField(read_only=True)
     is_liked = serializers.BooleanField(read_only=True)
     like_count = serializers.IntegerField(read_only=True)
-    reply_count = serializers.IntegerField(default=0)
-    comment_count = serializers.IntegerField(default=0)
-    img = CustomListImageSerializer()
+    reply_count = serializers.IntegerField(read_only=True, default=0)
+    comment_count = serializers.IntegerField(read_only=True, default=0)
+    img = CustomListImageSerializer(read_only=True)
 
     class Meta:
         model = Tweets
         fields = ['id', 'user_name', 'user_login', 'user_avatar', 'created_date', 'text', 'img', 'is_liked',
                   'like_count', 'reply_count', 'comment_count']
 
+
+class TweetCreateSerializer(serializers.Serializer):
+
+    text = serializers.CharField(max_length=255)
+    images = serializers.ListField(child=serializers.ImageField(), required=False)
+
     def create(self, validated_data):
+
+        print(self.context['request'].data)
+
         user = self.context['request'].user
-        tweets = Tweets.objects.create(user=user, **validated_data)
-        return tweets
+        text = validated_data.pop('text')
+        images = validated_data.pop('images')
+
+        tweet = Tweets.objects.create(user=user, text=text)
+
+        for image in images:
+            TweetImage.objects.create(tweet=tweet, img=image)
+
+        return tweet
+
+    def to_representation(self, instance):
+        return TweetsListSerializer(instance).data

@@ -4,7 +4,7 @@ from rest_framework.views import APIView
 from rest_framework.views import Response
 
 from .models import Tweets
-from .serializers import TweetsListSerializer
+from .serializers import TweetsListSerializer, TweetCreateSerializer
 from .utils import merge_values
 
 
@@ -31,7 +31,11 @@ class TweetsListApiView(ListCreateAPIView):
 
         return merge_values(queryset)
 
-    serializer_class = TweetsListSerializer
+    def get_serializer_class(self):
+        if self.request.method == 'GET':
+            return TweetsListSerializer
+        elif self.request.method == 'POST':
+            return TweetCreateSerializer
 
 
 class TweetLikeApiView(APIView):
