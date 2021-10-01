@@ -10,7 +10,7 @@ VISIBILITY_CHOICES = (('followers', 'only followers'),
                       ('all', 'all'))
 
 
-class Tweets(models.Model):
+class Tweet(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='tweets')
     text = models.CharField(max_length=280)
     created_date = models.DateTimeField(auto_now_add=True)
@@ -26,5 +26,5 @@ class Tweets(models.Model):
 
 
 class TweetImage(models.Model):
-    tweet = models.ForeignKey(Tweets, on_delete=models.CASCADE, related_name='images')
+    tweet = models.ForeignKey(Tweet, on_delete=models.CASCADE, related_name='images')
     img = models.ImageField(upload_to='images/tweets')

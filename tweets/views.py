@@ -4,7 +4,7 @@ from rest_framework.views import APIView
 from rest_framework.views import Response
 from rest_framework_simplejwt.authentication import JWTAuthentication
 
-from .models import Tweets
+from .models import Tweet
 from .serializers import TweetSerializer, TweetCreateSerializer
 from .utils import merge_values
 
@@ -15,7 +15,7 @@ class TweetsListApiView(ListCreateAPIView):
     def get_queryset(self):
 
         user_likes_id = self.request.user.tweets_liked.values_list('id', flat=True)
-        queryset = Tweets.objects \
+        queryset = Tweet.objects \
             .select_related('user') \
             .prefetch_related('users_like') \
             .prefetch_related('images') \
@@ -45,7 +45,7 @@ class TweetDetailApiView(RetrieveAPIView):
 
         user_likes_id = self.request.user.tweets_liked.values_list('id', flat=True)
 
-        queryset = Tweets.objects \
+        queryset = Tweet.objects \
             .select_related('user') \
             .prefetch_related('users_like') \
             .prefetch_related('images') \
@@ -72,7 +72,7 @@ class TweetLikeApiView(APIView):
         tweet_id = request.data.get('id')
         action = request.data.get('action')
 
-        tweet = Tweets.objects.get(id=tweet_id)
+        tweet = Tweet.objects.get(id=tweet_id)
 
         if action == 'like':
             tweet.users_like.add(request.user.id)

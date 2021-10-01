@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from .models import Tweets, TweetImage
+from .models import Tweet, TweetImage
 
 
 class CustomListImageSerializer(serializers.ListField):
@@ -21,7 +21,7 @@ class TweetSerializer(serializers.ModelSerializer):
     img = CustomListImageSerializer(read_only=True)
 
     class Meta:
-        model = Tweets
+        model = Tweet
         fields = ['id', 'user_name', 'user_login', 'user_avatar', 'created_date', 'text', 'img', 'is_liked',
                   'like_count', 'reply_count', 'comment_count']
 
@@ -39,7 +39,7 @@ class TweetCreateSerializer(serializers.Serializer):
         text = validated_data.pop('text')
         images = validated_data.pop('images')
 
-        tweet = Tweets.objects.create(user=user, text=text)
+        tweet = Tweet.objects.create(user=user, text=text)
 
         for image in images:
             TweetImage.objects.create(tweet=tweet, img=image)
