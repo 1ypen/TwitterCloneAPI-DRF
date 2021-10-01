@@ -27,14 +27,10 @@ class TweetSerializer(serializers.ModelSerializer):
 
 
 class TweetCreateSerializer(serializers.Serializer):
-
     text = serializers.CharField(max_length=255)
     images = serializers.ListField(child=serializers.ImageField(), required=False)
 
     def create(self, validated_data):
-
-        print(self.context['request'].data)
-
         user = self.context['request'].user
         text = validated_data.pop('text')
         images = validated_data.pop('images')
