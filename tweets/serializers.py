@@ -10,7 +10,7 @@ class CustomListImageSerializer(serializers.ListField):
         return [self.child.to_representation(item) if item is not None else None for item in data]
 
 
-class TweetsListSerializer(serializers.ModelSerializer):
+class TweetSerializer(serializers.ModelSerializer):
     user_name = serializers.CharField(read_only=True)
     user_login = serializers.CharField(read_only=True)
     user_avatar = serializers.URLField(read_only=True)
@@ -47,4 +47,4 @@ class TweetCreateSerializer(serializers.Serializer):
         return tweet
 
     def to_representation(self, instance):
-        return TweetsListSerializer(instance).data
+        return TweetSerializer(instance).data
