@@ -1,7 +1,7 @@
 from django.db.models import Count, F, Case, When
 from rest_framework.generics import ListCreateAPIView, RetrieveAPIView
-from rest_framework.views import APIView
-from rest_framework.views import Response
+from rest_framework.pagination import LimitOffsetPagination
+from rest_framework.views import APIView, Response
 from rest_framework_simplejwt.authentication import JWTAuthentication
 
 from .models import Tweet
@@ -9,8 +9,9 @@ from .serializers import TweetSerializer, TweetCreateSerializer
 from .utils import merge_values
 
 
-class TweetsListApiView(ListCreateAPIView):
+class TweetListApiView(ListCreateAPIView):
     authentication_classes = (JWTAuthentication,)
+    pagination_class = LimitOffsetPagination
 
     def get_queryset(self):
 
