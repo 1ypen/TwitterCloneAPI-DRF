@@ -31,7 +31,7 @@ ALLOWED_HOSTS = ['*']
 INSTALLED_APPS = [
 
     'accounts',
-    'tweets',
+    'tweet',
     'comment',
 
     'rest_framework',
