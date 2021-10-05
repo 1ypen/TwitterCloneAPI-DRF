@@ -10,6 +10,7 @@ from Twitter import settings
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/tweet/', include('tweet.urls')),
+    path('api/account/', include('accounts.urls')),
     path('api/comment/', include('comment.urls')),
     url(r'^auth/', include('djoser.urls')),
     url(r'^auth/', include('djoser.urls.jwt')),
