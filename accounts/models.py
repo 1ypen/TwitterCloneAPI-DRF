@@ -77,3 +77,8 @@ class User(AbstractBaseUser):
         """Is the user a member of staff?"""
         # Simplest possible answer: All admins are staff
         return self.is_admin
+
+
+class Relationship(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='followings')
+    following = models.ForeignKey(User, on_delete=models.CASCADE, related_name='followers')
