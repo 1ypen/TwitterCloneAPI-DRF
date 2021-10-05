@@ -10,7 +10,6 @@ from .utils import merge_values
 
 
 class TweetListApiView(ListCreateAPIView):
-    authentication_classes = (JWTAuthentication,)
     pagination_class = LimitOffsetPagination
 
     def get_queryset(self):

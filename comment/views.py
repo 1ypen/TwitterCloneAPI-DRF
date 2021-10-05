@@ -9,7 +9,6 @@ from .serializers import CommentSerializer
 
 class CommentListApiView(ListCreateAPIView):
     serializer_class = CommentSerializer
-    authentication_classes = (JWTAuthentication,)
     pagination_class = LimitOffsetPagination
 
     def get_queryset(self):
