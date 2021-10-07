@@ -2,6 +2,11 @@ from itertools import groupby
 
 
 def merge_values(values):
+    """
+
+    Combines all the values of the many to many field into one
+    taken from https://stackoverflow.com/questions/12139923/all-the-values-of-the-many-to-many-field-django
+    """
     grouped_results = groupby(values, key=lambda value: value['id'])
     merged_values = []
     for k, g in grouped_results:

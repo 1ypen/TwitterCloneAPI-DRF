@@ -138,6 +138,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 AUTH_USER_MODEL = 'accounts.User'
 
+# debug_toolbar setting
 INTERNAL_IPS = [
     '127.0.0.1',
 ]

@@ -10,11 +10,21 @@ from .utils import merge_values
 
 
 class TweetListApiView(ListCreateAPIView):
+    """
+    a function for getting all tweets
+    with the possibility of pagination
+    """
+
     pagination_class = LimitOffsetPagination
 
     def get_queryset(self):
 
+        # i get a list of IDs of tweets that the user liked
         user_likes_id = self.request.user.tweets_liked.values_list('id', flat=True)
+
+        # i make a query to the database to get responses
+        # with additional fields that are not in the tweet model,
+        # use the select_related, prefetch_related and values methods to optimize the query
         queryset = Tweet.objects \
             .select_related('user') \
             .prefetch_related('users_like') \
@@ -67,6 +77,9 @@ class TweetDetailApiView(RetrieveAPIView):
 
 
 class TweetLikeApiView(APIView):
+    """
+    implementation of adding like or removing like to a tweet
+    """
 
     def post(self, request):
         tweet_id = request.data.get('id')

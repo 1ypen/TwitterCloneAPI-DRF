@@ -41,6 +41,10 @@ class UserManager(BaseUserManager):
 
 
 class User(AbstractBaseUser):
+    """
+    the model describing the user
+    """
+
     name = models.CharField(max_length=125)
     email = models.EmailField()
     login = models.CharField(max_length=125, unique=True)
@@ -80,5 +84,10 @@ class User(AbstractBaseUser):
 
 
 class Relationship(models.Model):
+    """
+    a "many to many" model describing a user's
+    relationship with another user (followers/following)
+    """
+
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='followings')
     following = models.ForeignKey(User, on_delete=models.CASCADE, related_name='followers')
