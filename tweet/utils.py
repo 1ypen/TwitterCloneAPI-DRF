@@ -1,4 +1,5 @@
 from itertools import groupby
+from django.core.exceptions import ObjectDoesNotExist
 
 
 def merge_values(values):
@@ -25,3 +26,11 @@ def merge_values(values):
                         merged_value[key] = [old_val, val]
         merged_values.append(merged_value)
     return merged_values
+
+
+def get_object_or_none(model, **kwargs):
+    try:
+        object = model.objects.get(**kwargs)
+    except model.DoesNotExist:
+        object = None
+    return object

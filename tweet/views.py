@@ -1,12 +1,12 @@
 from django.db.models import Count, F, Case, When
+from rest_framework import status
 from rest_framework.generics import ListCreateAPIView, RetrieveAPIView
 from rest_framework.pagination import LimitOffsetPagination
 from rest_framework.views import APIView, Response
-from rest_framework_simplejwt.authentication import JWTAuthentication
 
 from .models import Tweet
 from .serializers import TweetSerializer, TweetCreateSerializer
-from .utils import merge_values
+from .utils import merge_values, get_object_or_none
 
 
 class TweetListApiView(ListCreateAPIView):
@@ -30,14 +30,14 @@ class TweetListApiView(ListCreateAPIView):
             .prefetch_related('users_like') \
             .prefetch_related('images') \
             .values(
-                'id', 'created_date', 'text',
-                like_count=Count('users_like'),
-                img=F('images__img'),
-                is_liked=Case(When(id__in=user_likes_id, then=True), default=False),
-                user_name=F('user__name'),
-                user_login=F('user__login'),
-                user_avatar=F('user__avatar')
-            )
+            'id', 'created_date', 'text',
+            like_count=Count('users_like'),
+            img=F('images__img'),
+            is_liked=Case(When(id__in=user_likes_id, then=True), default=False),
+            user_name=F('user__name'),
+            user_login=F('user__login'),
+            user_avatar=F('user__avatar')
+        )
 
         return merge_values(queryset)
 
@@ -52,7 +52,6 @@ class TweetDetailApiView(RetrieveAPIView):
     serializer_class = TweetSerializer
 
     def get_queryset(self):
-
         user_likes_id = self.request.user.tweets_liked.values_list('id', flat=True)
 
         queryset = Tweet.objects \
@@ -60,14 +59,14 @@ class TweetDetailApiView(RetrieveAPIView):
             .prefetch_related('users_like') \
             .prefetch_related('images') \
             .values(
-                'id', 'created_date', 'text',
-                like_count=Count('users_like'),
-                img=F('images__img'),
-                is_liked=Case(When(id__in=user_likes_id, then=True), default=False),
-                user_name=F('user__name'),
-                user_login=F('user__login'),
-                user_avatar=F('user__avatar')
-            ).filter(**self.kwargs)
+            'id', 'created_date', 'text',
+            like_count=Count('users_like'),
+            img=F('images__img'),
+            is_liked=Case(When(id__in=user_likes_id, then=True), default=False),
+            user_name=F('user__name'),
+            user_login=F('user__login'),
+            user_avatar=F('user__avatar')
+        ).filter(**self.kwargs)
 
         return merge_values(queryset)[0]
 
@@ -85,11 +84,11 @@ class TweetLikeApiView(APIView):
         tweet_id = request.data.get('id')
         action = request.data.get('action')
 
-        tweet = Tweet.objects.get(id=tweet_id)
-
-        if action == 'like':
-            tweet.users_like.add(request.user.id)
-        elif action == 'dislike':
-            tweet.users_like.remove(request.user.id)
-
-        return Response()
+        tweet = get_object_or_none(Tweet, id=tweet_id)
+        if tweet:
+            if action == 'like':
+                tweet.users_like.add(request.user.id)
+            elif action == 'dislike':
+                tweet.users_like.remove(request.user.id)
+            return Response()
+        return Response(status=status.HTTP_404_NOT_FOUND)
