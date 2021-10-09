@@ -46,7 +46,7 @@ class User(AbstractBaseUser):
     """
 
     name = models.CharField(max_length=125)
-    email = models.EmailField()
+    email = models.EmailField(unique=True)
     login = models.CharField(max_length=125, unique=True)
     about = models.CharField(max_length=160, blank=True, null=True)
     avatar = models.ImageField(upload_to='images/avatars', blank=True, null=True)
@@ -61,7 +61,7 @@ class User(AbstractBaseUser):
 
     USERNAME_FIELD = 'login'
     EMAIL_FIELD = 'email'
-    REQUIRED_FIELDS = ['name', 'email']
+    REQUIRED_FIELDS = ['name', 'email', 'date_of_birth']
 
     def __str__(self):
         return self.login
