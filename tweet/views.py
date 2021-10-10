@@ -30,14 +30,14 @@ class TweetListApiView(ListCreateAPIView):
             .prefetch_related('users_like') \
             .prefetch_related('images') \
             .values(
-            'id', 'created_date', 'text',
-            like_count=Count('users_like'),
-            img=F('images__img'),
-            is_liked=Case(When(id__in=user_likes_id, then=True), default=False),
-            user_name=F('user__name'),
-            user_login=F('user__login'),
-            user_avatar=F('user__avatar')
-        )
+                'id', 'created_date', 'text',
+                like_count=Count('users_like'),
+                img=F('images__img'),
+                is_liked=Case(When(id__in=user_likes_id, then=True), default=False),
+                user_name=F('user__name'),
+                user_login=F('user__login'),
+                user_avatar=F('user__avatar')
+            )
 
         return merge_values(queryset)
 
@@ -59,14 +59,14 @@ class TweetDetailApiView(RetrieveAPIView):
             .prefetch_related('users_like') \
             .prefetch_related('images') \
             .values(
-            'id', 'created_date', 'text',
-            like_count=Count('users_like'),
-            img=F('images__img'),
-            is_liked=Case(When(id__in=user_likes_id, then=True), default=False),
-            user_name=F('user__name'),
-            user_login=F('user__login'),
-            user_avatar=F('user__avatar')
-        ).filter(**self.kwargs)
+                'id', 'created_date', 'text',
+                like_count=Count('users_like'),
+                img=F('images__img'),
+                is_liked=Case(When(id__in=user_likes_id, then=True), default=False),
+                user_name=F('user__name'),
+                user_login=F('user__login'),
+                user_avatar=F('user__avatar')
+            ).filter(**self.kwargs)
 
         return merge_values(queryset)[0]
 
