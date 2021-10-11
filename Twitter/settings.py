@@ -179,9 +179,10 @@ EMAIL_USE_TLS = True
 DEFAULT_FROM_EMAIL = 'twitter.verify.clone@gmail.com'
 SITE_NAME = "Twitter"
 
+DOMAIN = 'localhost:3000'
 
 DJOSER = {
-    'ACTIVATION_URL': 'activate/{uid}/{token}',
+    'ACTIVATION_URL': '/account/activate/{uid}/{token}',
     'SEND_ACTIVATION_EMAIL': True,
     'SERIALIZERS': {'token_create': 'accounts.serializers.CustomTokenCreateSerializer'}
 }
