@@ -1,6 +1,7 @@
 from django.db.models import Count, F, Case, When
+from django.http import Http404
 from rest_framework import status
-from rest_framework.generics import ListCreateAPIView, RetrieveAPIView
+from rest_framework.generics import ListCreateAPIView, RetrieveAPIView, get_object_or_404
 from rest_framework.pagination import LimitOffsetPagination
 from rest_framework.views import APIView, Response
 
@@ -52,27 +53,29 @@ class TweetDetailApiView(RetrieveAPIView):
     serializer_class = TweetSerializer
 
     def get_queryset(self):
-        user_likes_id = self.request.user.tweets_liked.values_list('id', flat=True)
-
         queryset = Tweet.objects \
             .select_related('user') \
             .prefetch_related('users_like') \
-            .prefetch_related('images') \
-            .values(
-                'id', 'created_date', 'text',
-                like_count=Count('users_like'),
-                img=F('images__img'),
-                is_liked=Case(When(id__in=user_likes_id, then=True), default=False),
-                user_name=F('user__name'),
-                user_login=F('user__login'),
-                user_avatar=F('user__avatar')
-            ).filter(**self.kwargs)
+            .prefetch_related('images')
 
-        return merge_values(queryset)[0]
+        return queryset
 
     def get_object(self):
-        queryset = self.filter_queryset(self.get_queryset())
-        return queryset
+        user_likes_id = self.request.user.tweets_liked.values_list('id', flat=True)
+        queryset = self.filter_queryset(self.get_queryset().values(
+            'id', 'created_date', 'text',
+            like_count=Count('users_like'),
+            img=F('images__img'),
+            is_liked=Case(When(id__in=user_likes_id, then=True), default=False),
+            user_name=F('user__name'),
+            user_login=F('user__login'),
+            user_avatar=F('user__avatar')
+        ).filter(**self.kwargs))
+
+        obj = merge_values(queryset)
+        if not obj:
+            raise Http404
+        return obj
 
 
 class TweetLikeApiView(APIView):
