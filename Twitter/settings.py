@@ -179,7 +179,7 @@ EMAIL_USE_TLS = True
 DEFAULT_FROM_EMAIL = 'twitter.verify.clone@gmail.com'
 SITE_NAME = "Twitter"
 
-DOMAIN = 'localhost:3000'
+DOMAIN = 'react-twitter-clone-df182.web.app'
 
 DJOSER = {
     'ACTIVATION_URL': '/account/activate/{uid}/{token}',
