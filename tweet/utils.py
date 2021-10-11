@@ -25,7 +25,8 @@ def merge_values(values):
                         old_val = merged_value[key]
                         merged_value[key] = [old_val, val]
         merged_values.append(merged_value)
-    return merged_values
+
+    return merged_values[0] if len(merged_values) == 1 else merged_values
 
 
 def get_object_or_none(model, **kwargs):
