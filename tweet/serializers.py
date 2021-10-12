@@ -16,7 +16,7 @@ class TweetSerializer(serializers.ModelSerializer):
     user_login = serializers.CharField(read_only=True)
     user_avatar = serializers.URLField(read_only=True)
     is_liked = serializers.BooleanField(read_only=True)
-    like_count = serializers.IntegerField(read_only=True)
+    like_count = serializers.IntegerField(read_only=True, default=0)
     reply_count = serializers.IntegerField(read_only=True, default=0)
     comment_count = serializers.IntegerField(read_only=True, default=0)
     img = CustomListImageSerializer(read_only=True)
