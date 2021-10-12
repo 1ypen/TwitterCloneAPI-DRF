@@ -1,7 +1,7 @@
 from django.db.models import Count, F, Case, When
 from django.http import Http404
 from rest_framework import status
-from rest_framework.generics import ListCreateAPIView, RetrieveAPIView, get_object_or_404
+from rest_framework.generics import ListCreateAPIView, RetrieveAPIView
 from rest_framework.pagination import LimitOffsetPagination
 from rest_framework.views import APIView, Response
 
