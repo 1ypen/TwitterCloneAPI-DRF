@@ -19,7 +19,7 @@ class Tweet(models.Model):
     visibility = models.CharField(max_length=55, choices=VISIBILITY_CHOICES, default='all')
 
     class Meta:
-        ordering = ('-created_date',)
+        ordering = ('-id',)
 
     def __str__(self):
         return self.text[:50]
