@@ -1,3 +1,4 @@
+from django.db.models import Count, Case, When, F
 from rest_framework import serializers
 
 from .models import Tweet, TweetImage
@@ -37,10 +38,17 @@ class TweetCreateSerializer(serializers.Serializer):
 
         tweet = Tweet.objects.create(user=user, text=text)
 
-        for image in images:
-            TweetImage.objects.create(tweet=tweet, img=image)
+        images_object = [TweetImage.objects.create(tweet=tweet, img=image) for image in images]
 
-        return tweet
+        return tweet, images_object
 
     def to_representation(self, instance):
-        return TweetSerializer(instance).data
+        tweet, images = instance
+        user = self.context['request'].user
+        object = {**tweet.__dict__,
+                  'user_name': user.name,
+                  'user_login': user.login,
+                  'user_avatar': user.avatar,
+                  'img': images
+                  }
+        return TweetSerializer(object).data
