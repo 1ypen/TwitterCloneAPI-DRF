@@ -38,7 +38,7 @@ class TweetListApiView(ListCreateAPIView):
                 user_name=F('user__name'),
                 user_login=F('user__login'),
                 user_avatar=F('user__avatar')
-            ).order_by('id')
+            ).order_by('-id')
 
         return merge_values(queryset)
 
