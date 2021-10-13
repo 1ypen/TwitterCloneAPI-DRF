@@ -6,6 +6,7 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from accounts.models import User
 from .models import Tweet
 
+
 class TweetTest(APITestCase):
     def setUp(self):
         self.test_user = User.objects.create(
@@ -32,4 +33,3 @@ class TweetTest(APITestCase):
         response = self.client.post(url, data, format='json')
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(Tweet.objects.count(), 1)
-

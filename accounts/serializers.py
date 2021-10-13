@@ -1,6 +1,6 @@
 from .models import User
 
-from django.contrib.auth import authenticate, get_user_model
+from django.contrib.auth import authenticate
 from djoser.conf import settings
 from djoser.serializers import TokenCreateSerializer
 
@@ -18,6 +18,6 @@ class CustomTokenCreateSerializer(TokenCreateSerializer):
             if self.user and not self.user.check_password(password):
                 self.fail("invalid_credentials")
         # We changed only below line
-        if self.user: # and self.user.is_active:
+        if self.user:  # and self.user.is_active:
             return attrs
         self.fail("invalid_credentials")

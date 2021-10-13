@@ -1,7 +1,6 @@
 from django.db.models import F
 from rest_framework.generics import ListCreateAPIView
 from rest_framework.pagination import LimitOffsetPagination
-from rest_framework_simplejwt.authentication import JWTAuthentication
 
 from .models import Comment
 from .serializers import CommentSerializer

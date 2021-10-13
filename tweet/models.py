@@ -1,22 +1,13 @@
 from django.db import models
-
-from datetime import datetime, timezone
-
-from accounts.models import User
-
-
-VISIBILITY_CHOICES = (('followers', 'only followers'),
-                      ('follow', 'only my subscriptions'),
-                      ('all', 'all'))
+from django.conf import settings
 
 
 class Tweet(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='tweet')
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='tweet')
     text = models.CharField(max_length=280)
     created_date = models.DateTimeField(auto_now_add=True)
     is_active = models.BooleanField(default=True)
-    users_like = models.ManyToManyField(User, related_name='tweets_liked', blank=True)
-    visibility = models.CharField(max_length=55, choices=VISIBILITY_CHOICES, default='all')
+    users_like = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='tweets_liked', blank=True)
 
     class Meta:
         ordering = ('-id',)

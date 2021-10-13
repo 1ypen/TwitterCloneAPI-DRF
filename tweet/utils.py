@@ -1,5 +1,4 @@
 from itertools import groupby
-from django.core.exceptions import ObjectDoesNotExist
 
 
 def merge_values(values):
