@@ -1,4 +1,3 @@
-from django.db.models import Count, Case, When, F
 from rest_framework import serializers
 
 from .models import Tweet, TweetImage
