@@ -1,11 +1,11 @@
-from django.db.models import Count, F, Case, When, QuerySet, Subquery, OuterRef, Prefetch
+from django.db.models import Count, F, Case, When
 from django.http import Http404
-from rest_framework import status, renderers
+from rest_framework import status
 from rest_framework.generics import ListCreateAPIView, RetrieveAPIView
 from rest_framework.pagination import LimitOffsetPagination
 from rest_framework.views import APIView, Response
 
-from .models import Tweet, TweetImage
+from .models import Tweet
 from .serializers import TweetSerializer, TweetCreateSerializer
 from .utils import merge_values, get_object_or_none
 
