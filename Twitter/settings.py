@@ -182,8 +182,9 @@ SITE_NAME = "Twitter"
 DOMAIN = 'react-twitter-clone-df182.web.app'
 
 DJOSER = {
-    'ACTIVATION_URL': '/account/activate/{uid}/{token}',
     'SEND_ACTIVATION_EMAIL': True,
+    'ACTIVATION_URL': '/account/activate/{uid}/{token}',
+    "PASSWORD_RESET_CONFIRM_URL": "/account/reset_password/{uid}/{token}",
     'SERIALIZERS': {'token_create': 'accounts.serializers.CustomTokenCreateSerializer'}
 }
 
