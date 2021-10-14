@@ -1,10 +1,12 @@
 from django.db.models import Count, F, Case, When
 from django.http import Http404
 from rest_framework import status
-from rest_framework.generics import ListCreateAPIView, RetrieveAPIView
+from rest_framework.exceptions import ValidationError
+from rest_framework.generics import ListCreateAPIView, RetrieveAPIView, get_object_or_404
 from rest_framework.pagination import LimitOffsetPagination
 from rest_framework.views import APIView, Response
 
+from .custom_permissions import IsOwnerPermission
 from .models import Tweet
 from .serializers import TweetSerializer, TweetCreateSerializer
 from .utils import merge_values, get_object_or_none
@@ -38,7 +40,7 @@ class TweetListApiView(ListCreateAPIView):
                 user_name=F('user__name'),
                 user_login=F('user__login'),
                 user_avatar=F('user__avatar')
-            ).order_by('-id')
+            ).order_by('-id').filter(is_active=True)
 
         return queryset
 
@@ -76,7 +78,7 @@ class TweetDetailApiView(RetrieveAPIView):
                 user_name=F('user__name'),
                 user_login=F('user__login'),
                 user_avatar=F('user__avatar')
-            )
+            ).filter(is_active=True)
 
         return queryset
 
@@ -104,3 +106,21 @@ class TweetLikeApiView(APIView):
                 tweet.users_like.remove(request.user.id)
             return Response()
         return Response(status=status.HTTP_404_NOT_FOUND)
+
+
+class TweetDeleteApiView(APIView):
+
+    permission_classes = (IsOwnerPermission, )
+
+    def delete(self, request):
+        tweet_id = request.data.get('id')
+        if not tweet_id:
+            raise ValidationError({"id": ["This field is required."]})
+
+        obj = get_object_or_404(Tweet, id=tweet_id, is_active=True)
+        self.check_object_permissions(self.request, obj)
+
+        obj.is_active = False
+        obj.save()
+
+        return Response(status=status.HTTP_204_NO_CONTENT)
