@@ -21,8 +21,8 @@ class TweetListApiView(ListCreateAPIView):
     def get_queryset(self):
 
         # i get a list of IDs of tweets that the user liked
-        # user_likes_id = self.request.user.tweets_liked.values_list('id', flat=True)
-        user_likes_id = []
+        user_likes_id = self.request.user.tweets_liked.values_list('id', flat=True)
+
         # i make a query to the database to get responses
         # with additional fields that are not in the tweet model,
         # use the select_related, prefetch_related and values methods to optimize the query
@@ -82,11 +82,9 @@ class TweetDetailApiView(RetrieveAPIView):
 
     def get_object(self):
         queryset = self.filter_queryset(self.get_queryset().filter(**self.kwargs))
-
-        obj = merge_values(queryset)
-        if not obj:
+        if not queryset:
             raise Http404
-        return obj
+        return merge_values(queryset)[0]
 
 
 class TweetLikeApiView(APIView):
