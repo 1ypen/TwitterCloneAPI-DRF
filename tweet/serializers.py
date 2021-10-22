@@ -31,13 +31,14 @@ class TweetCreateSerializer(serializers.Serializer):
     images = serializers.ListField(child=serializers.ImageField(), required=False)
 
     def create(self, validated_data):
+
         user = self.context['request'].user
         text = validated_data.pop('text')
         images = validated_data.pop('images')
 
         tweet = Tweet.objects.create(user=user, text=text)
 
-        images_object = [TweetImage.objects.create(tweet=tweet, img=image) for image in images]
+        images_object = [str(TweetImage.objects.create(tweet=tweet, img=image).img) for image in images]
 
         return tweet, images_object
 

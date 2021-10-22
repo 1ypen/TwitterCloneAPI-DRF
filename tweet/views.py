@@ -66,6 +66,9 @@ class TweetDetailApiView(RetrieveAPIView):
     serializer_class = TweetSerializer
 
     def get_queryset(self):
+
+        user_likes_id = self.request.user.tweets_liked.values_list('id', flat=True)
+
         queryset = Tweet.objects \
             .select_related('user') \
             .prefetch_related('users_like') \
@@ -74,7 +77,7 @@ class TweetDetailApiView(RetrieveAPIView):
                 'id', 'created_date', 'text',
                 like_count=Count('users_like'),
                 img=F('images__img'),
-                is_liked=Case(When(id__in=[], then=True), default=False),
+                is_liked=Case(When(id__in=user_likes_id, then=True), default=False),
                 user_name=F('user__name'),
                 user_login=F('user__login'),
                 user_avatar=F('user__avatar')
