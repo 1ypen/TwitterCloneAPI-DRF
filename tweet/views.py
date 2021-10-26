@@ -2,12 +2,12 @@ from django.db.models import Count, F, Case, When
 from django.http import Http404
 from rest_framework import status
 from rest_framework.exceptions import ValidationError
-from rest_framework.generics import ListCreateAPIView, RetrieveAPIView, get_object_or_404
+from rest_framework.generics import ListAPIView, ListCreateAPIView, RetrieveAPIView, get_object_or_404
 from rest_framework.pagination import LimitOffsetPagination
 from rest_framework.views import APIView, Response
 
 from .custom_permissions import IsOwnerPermission
-from .models import Tweet
+from .models import Tweet, Bookmark
 from .serializers import TweetSerializer, TweetCreateSerializer
 from .utils import merge_values, get_object_or_none
 
@@ -127,3 +127,39 @@ class TweetDeleteApiView(APIView):
         obj.save()
 
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+class Bookmarks(ListAPIView):
+
+    serializer_class = TweetSerializer
+
+    def get_queryset(self):
+        bookmarks_id = Bookmark.objects.filter(user_id=self.request.user.id).values_list('tweet_id', flat=True)
+        user_likes_id = self.request.user.tweets_liked.values_list('id', flat=True)
+
+        queryset = Tweet.objects \
+            .select_related('user') \
+            .prefetch_related('users_like') \
+            .prefetch_related('images') \
+            .values(
+                'id', 'created_date', 'text',
+                like_count=Count('users_like'),
+                img=F('images__img'),
+                is_liked=Case(When(id__in=user_likes_id, then=True), default=False),
+                user_name=F('user__name'),
+                user_login=F('user__login'),
+                user_avatar=F('user__avatar')
+            ).order_by('-id').filter(is_active=True, id__in=bookmarks_id)
+
+        return queryset
+
+    def list(self, request, *args, **kwargs):
+        queryset = merge_values(self.filter_queryset(self.get_queryset()))
+
+        page = self.paginate_queryset(queryset)
+        if page is not None:
+            serializer = self.get_serializer(page, many=True)
+            return self.get_paginated_response(serializer.data)
+
+        serializer = self.get_serializer(queryset, many=True)
+        return Response(serializer.data)
